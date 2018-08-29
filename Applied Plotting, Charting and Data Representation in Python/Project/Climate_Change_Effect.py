@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Read Toronto, Ontario weather data
 # Drop unwanted columns and rows
 df1 = pd.read_excel('Toronto_Ontario_Historical_Weather_Data.xlsx', skiprows=18, index_col=0)
-df1.drop(columns=['Year','Mean Max Temp Flag','Mean Min Temp Flag', 'Mean Temp Flag'], axis=1, inplace=True)
+df1.drop(columns=['Mean Max Temp Flag','Mean Min Temp Flag', 'Mean Temp Flag'], axis=1, inplace=True)
 df1.drop(df1.columns[4:], axis=1, inplace=True)
 # Drop weather data until 1957 to make it time-consistent with Hall Beach weather data
 df1.drop(df1.index[0:1404], inplace=True)
@@ -32,4 +33,24 @@ df2.rename(columns={'Month':'Month_HallBeach','Mean Max Temp (°C)':'Mean_Max_Ha
 # Merge (Union all) two dataframes df1 & df2
 df = pd.concat([df1,df2], axis=1)
 df.drop(df.columns[[4]], axis=1, inplace=True)
-print(df.head(5))
+#print(df.head(5))
+
+#############################################################################################################
+
+# Plot 3x1 matrix of line charts to compare the weather trend accross the timeline month wise
+# First row will plot maximum temperature for both region (Januray)
+# Second row will plot mean temperature for both region (January)
+# Third row will plot minimum temperature for both region (January)
+
+jan_temp = df[df['Month']==1]
+print(jan_temp.head(5))
+
+fig = plt.figure()
+
+plt.subplot(3, 1, 1)
+plt.plot(jan_temp['Year'], jan_temp['Mean_Max_Toronto_(°C)'], '-')
+plt.title('Comparison of mean maximum temperatures of Toronto, Ontario and Hall Beach, Nunavut')
+plt.ylabel('Temperatue (°C)')
+
+
+fig.savefig('outputFigure.png')
